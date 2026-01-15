@@ -56,15 +56,13 @@
         
         <div class="flex justify-center flex-wrap gap-2 mt-4" id="tabs">
             <div class="tab active" data-cat="all">All</div>
-            <div class="tab" data-cat="Wood Dark">Wood Dark</div>
-            <div class="tab" data-cat="Wood Med">Wood Med</div>
-            <div class="tab" data-cat="Wood Light">Wood Light</div>
-            <div class="tab" data-cat="Painted">Painted</div>
+            <div class="tab" data-cat="Wood">Wood</div>
             <div class="tab" data-cat="Stone">Stone</div>
-            <div class="tab" data-cat="Color">Color</div>
-            <div class="tab" data-cat="Steel">Steel</div>
+            <div class="tab" data-cat="Solid">Solid Color</div>
+            <div class="tab" data-cat="Metallic">Metallic</div>
             <div class="tab" data-cat="Textile">Textile</div>
             <div class="tab" data-cat="Glitter">Glitter</div>
+            <div class="tab" data-cat="Special">Special</div>
         </div>
     </div>
 </div>
@@ -74,60 +72,124 @@
 </div>
 
 <script>
-    // Removed the "scans/" folder prefix since files are in the root
     const IMG_SUFFIX = "-hd-0.jpg";
 
+    // This data is built strictly from the scan list you provided
     const data = [
-        { code: "A4", name: "Orangey Wenge", cat: "Wood Dark" },
-        { code: "AA05", name: "Honey Oak", cat: "Wood Dark" },
-        { code: "AA06", name: "Smoky Oak", cat: "Wood Dark" },
-        { code: "AA08", name: "Brown Orangey Oak", cat: "Wood Dark" },
-        { code: "AA09", name: "Gravel Grey Oak", cat: "Wood Dark" },
-        { code: "AA12", name: "Brown Line Oak", cat: "Wood Dark" },
-        { code: "AF06", name: "Brown Pine", cat: "Wood Dark" },
-        { code: "AL25", name: "Brown Walnut", cat: "Wood Dark" },
-        { code: "AT02", name: "Brown Cherry", cat: "Wood Dark" },
-        { code: "B9", name: "Roast Coffee", cat: "Wood Dark" },
-        { code: "CT55", name: "Deep Brown Oak", cat: "Wood Dark" },
-        { code: "CT61", name: "Deep Brown Ebony", cat: "Wood Dark" },
-        { code: "D1", name: "Classic Walnut", cat: "Wood Dark" },
-        { code: "NE62", name: "Brown Hazelwood", cat: "Wood Dark" },
-        { code: "NF54", name: "Metropolis Oak", cat: "Wood Dark" },
-        { code: "NH69", name: "Chocolate Walnut", cat: "Wood Dark" },
-        { code: "AA01", name: "Beige Oak", cat: "Wood Med" },
-        { code: "AA02", name: "Rustic Oak", cat: "Wood Med" },
-        { code: "AG15", name: "Golden Oak", cat: "Wood Med" },
-        { code: "B8", name: "Heritage Oak", cat: "Wood Med" },
-        { code: "CT10", name: "Honey Limba", cat: "Wood Med" },
-        { code: "F4", name: "Bucolic Oak", cat: "Wood Med" },
-        { code: "NF47", name: "Caramel Eiche", cat: "Wood Med" },
-        { code: "NH73", name: "Warm Walnut", cat: "Wood Med" },
-        { code: "AB02", name: "Creamy", cat: "Painted" },
-        { code: "J14", name: "Rich White", cat: "Painted" },
-        { code: "J2", name: "Rich Black", cat: "Painted" },
-        { code: "NF26", name: "Noir", cat: "Painted" },
-        { code: "AF02", name: "Beige Pine", cat: "Wood Light" },
-        { code: "AG01", name: "White Cream Ash", cat: "Wood Light" },
-        { code: "CT74", name: "Classic White Oak", cat: "Wood Light" },
-        { code: "NF40", name: "Classic Oak", cat: "Wood Light" },
-        { code: "NH64", name: "Pale Oak", cat: "Wood Light" },
-        { code: "NE31", name: "Statuary White", cat: "Stone" },
-        { code: "NF98", name: "Armani Nero", cat: "Stone" },
-        { code: "NH44", name: "Tundra Grey", cat: "Stone" },
-        { code: "U50", name: "Nero Marquina", cat: "Stone" },
-        { code: "J3", name: "Ultra White", cat: "Color" },
-        { code: "K1", name: "Black Mat", cat: "Color" },
-        { code: "L2", name: "Chilli Red", cat: "Color" },
-        { code: "M9", name: "Midnight Blue", cat: "Color" },
-        { code: "U10", name: "Black Iron", cat: "Steel" },
-        { code: "W6", name: "Corten", cat: "Steel" },
-        { code: "Q1", name: "Mat Aluminium", cat: "Steel" },
-        { code: "MA12", name: "White Warp", cat: "Textile" },
-        { code: "NE40", name: "Truffle Leather", cat: "Textile" },
-        { code: "NH18", name: "Natural Linen", cat: "Textile" },
+        // AA Series
+        { code: "AA01", name: "Beige Oak", cat: "Wood" },
+        { code: "AA02", name: "Rustic Oak", cat: "Wood" },
+        { code: "AA04", name: "Natural Oak", cat: "Wood" },
+        { code: "AA05", name: "Honey Oak", cat: "Wood" },
+        { code: "AA06", name: "Smoky Oak", cat: "Wood" },
+        { code: "AA08", name: "Brown Orangey Oak", cat: "Wood" },
+        { code: "AA09", name: "Gravel Grey Oak", cat: "Wood" },
+        { code: "AA12", name: "Brown Line Oak", cat: "Wood" },
+        { code: "AA15", name: "Limed Oak", cat: "Wood" },
+        { code: "AA17", name: "Soft Grey Oak", cat: "Wood" },
+        
+        // AB / AC / AF
+        { code: "AB02", name: "Creamy Painted", cat: "Solid" },
+        { code: "AB03", name: "Ivory", cat: "Solid" },
+        { code: "AB05", name: "Light Grey", cat: "Solid" },
+        { code: "AB06", name: "Dove Grey", cat: "Solid" },
+        { code: "AB07", name: "Slate", cat: "Solid" },
+        { code: "AC01", name: "White Wood", cat: "Wood" },
+        { code: "AC04", name: "Grey Wood", cat: "Wood" },
+        { code: "AF02", name: "Beige Pine", cat: "Wood" },
+        { code: "AF03", name: "Light Pine", cat: "Wood" },
+        { code: "AF05", name: "Grey Pine", cat: "Wood" },
+        { code: "AF06", name: "Brown Pine", cat: "Wood" },
+        { code: "AF07", name: "Aged Pine", cat: "Wood" },
+        { code: "AF08", name: "Driftwood", cat: "Wood" },
+        { code: "AF09", name: "Bleached Pine", cat: "Wood" },
+        { code: "AF10", name: "Smoked Pine", cat: "Wood" },
+
+        // AG Series
+        { code: "AG01", name: "White Ash", cat: "Wood" },
+        { code: "AG02", name: "Natural Ash", cat: "Wood" },
+        { code: "AG07", name: "Silver Ash", cat: "Wood" },
+        { code: "AG10", name: "Tan Ash", cat: "Wood" },
+        { code: "AG11", name: "Grey Ash", cat: "Wood" },
+        { code: "AG13", name: "Deep Ash", cat: "Wood" },
+        { code: "AG14", name: "Vintage Ash", cat: "Wood" },
+        { code: "AG15", name: "Golden Oak", cat: "Wood" },
+        { code: "AG16", name: "Mellow Oak", cat: "Wood" },
+        { code: "AG17", name: "Warm Oak", cat: "Wood" },
+        { code: "AG18", name: "Cool Ash", cat: "Wood" },
+        { code: "AG20", name: "Dark Ash", cat: "Wood" },
+
+        // AL Series
+        { code: "AL07", name: "White Walnut", cat: "Wood" },
+        { code: "AL08", name: "Grey Walnut", cat: "Wood" },
+        { code: "AL09", name: "Tan Walnut", cat: "Wood" },
+        { code: "AL10", name: "Natural Walnut", cat: "Wood" },
+        { code: "AL11", name: "Soft Walnut", cat: "Wood" },
+        { code: "AL12", name: "Classic Walnut", cat: "Wood" },
+        { code: "AL13", name: "Deep Walnut", cat: "Wood" },
+        { code: "AL14", name: "Golden Walnut", cat: "Wood" },
+        { code: "AL15", name: "Sienna Walnut", cat: "Wood" },
+        { code: "AL17", name: "Coffee Walnut", cat: "Wood" },
+        { code: "AL23", name: "Modern Walnut", cat: "Wood" },
+        { code: "AL24", name: "Rich Walnut", cat: "Wood" },
+        { code: "AL25", name: "Brown Walnut", cat: "Wood" },
+        { code: "AL26", name: "Dark Walnut", cat: "Wood" },
+        { code: "AL28", name: "Ebony Walnut", cat: "Wood" },
+        { code: "AL29", name: "Charcoal Walnut", cat: "Wood" },
+        { code: "AL30", name: "Black Walnut", cat: "Wood" },
+
+        // AT / AU / AZ
+        { code: "AT02", name: "Brown Cherry", cat: "Wood" },
+        { code: "AT03", name: "Light Cherry", cat: "Wood" },
+        { code: "AT04", name: "Medium Cherry", cat: "Wood" },
+        { code: "AT05", name: "Warm Cherry", cat: "Wood" },
+        { code: "AT06", name: "Dark Cherry", cat: "Wood" },
+        { code: "AU01", name: "Natural Elm", cat: "Wood" },
+        { code: "AU02", name: "Grey Elm", cat: "Wood" },
+        { code: "AZ07", name: "Special Wood", cat: "Wood" },
+
+        // B / CT Series (Wood and Mix)
+        { code: "B1", name: "White Oak", cat: "Wood" },
+        { code: "B3", name: "Grey Oak", cat: "Wood" },
+        { code: "B4", name: "Natural Beech", cat: "Wood" },
+        { code: "B5", name: "Light Beech", cat: "Wood" },
+        { code: "B6", name: "Dark Beech", cat: "Wood" },
+        { code: "B8", name: "Heritage Oak", cat: "Wood" },
+        { code: "B9", name: "Roast Coffee", cat: "Wood" },
+        { code: "B50", name: "Custom Mix", cat: "Special" },
+        { code: "CT10", name: "Honey Limba", cat: "Wood" },
+        { code: "CT11", name: "Classic Oak", cat: "Wood" },
+        { code: "CT13", name: "Vintage Oak", cat: "Wood" },
+        { code: "CT14", name: "Aged Oak", cat: "Wood" },
+        { code: "CT15", name: "Limed Oak", cat: "Wood" },
+        { code: "CT100", name: "Stone Texture", cat: "Stone" },
+        { code: "CT101", name: "Grey Marble", cat: "Stone" },
+        { code: "CT102", name: "White Marble", cat: "Stone" },
+
+        // J / K / L / M (Solid and Glitter)
+        { code: "J2", name: "Rich Black", cat: "Solid" },
+        { code: "J3", name: "Ultra White", cat: "Solid" },
+        { code: "J7", name: "Sparkling White", cat: "Glitter" },
+        { code: "K1", name: "Black Mat", cat: "Solid" },
+        { code: "L2", name: "Chilli Red", cat: "Solid" },
+        { code: "M9", name: "Midnight Blue", cat: "Solid" },
         { code: "R9", name: "Black Disco", cat: "Glitter" },
-        { code: "J7", name: "Sparkling White", cat: "Glitter" }
-        // Add more codes from your original list as needed
+
+        // NE / NF / NH (Extensive series)
+        { code: "NE31", name: "Statuary White", cat: "Stone" },
+        { code: "NE40", name: "Truffle Leather", cat: "Textile" },
+        { code: "NF26", name: "Noir", cat: "Solid" },
+        { code: "NF98", name: "Armani Nero", cat: "Stone" },
+        { code: "NH18", name: "Natural Linen", cat: "Textile" },
+        { code: "NH44", name: "Tundra Grey", cat: "Stone" },
+        { code: "NH84", name: "Modern Grey", cat: "Solid" },
+
+        // Q / U / W (Metallic and Stone)
+        { code: "Q1", name: "Mat Aluminium", cat: "Metallic" },
+        { code: "U10", name: "Black Iron", cat: "Metallic" },
+        { code: "U50", name: "Nero Marquina", cat: "Stone" },
+        { code: "W6", name: "Corten Steel", cat: "Metallic" },
+        { code: "W7", name: "Brushed Steel", cat: "Metallic" }
     ];
 
     const grid = document.getElementById('grid');
@@ -149,7 +211,6 @@
         filtered.forEach(item => {
             const el = document.createElement('div');
             el.className = 'card';
-            // Path is just the code + suffix since they are in root
             const imgPath = `${item.code}${IMG_SUFFIX}`;
             
             el.innerHTML = `
