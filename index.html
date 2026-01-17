@@ -34,7 +34,7 @@
         .tab:hover { color: #fff; background: #222; }
         .tab.active { background: var(--brand); color: #000; font-weight: 700; }
 
-        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; }
+        .card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; }
         .card:hover { transform: translateY(-5px); border-color: var(--brand); }
         
         .img-wrap { width: 100%; aspect-ratio: 1/1; background: #111; overflow: hidden; position: relative; }
@@ -51,6 +51,33 @@
             font-size: 0.7rem;
             font-weight: 700;
             margin-bottom: 1rem;
+        }
+
+        /* --- MODAL STYLES --- */
+        #modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #modal:not(.hidden) {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Modal content animation (Zoom In) */
+        #modal .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #modal:not(.hidden) .modal-content {
+            transform: scale(1);
         }
     </style>
 </head>
@@ -106,6 +133,46 @@
 
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-10 max-w-[1600px] mx-auto" id="grid">
     <!-- Items will appear here -->
+</div>
+
+<!-- === MODAL CONTAINER === -->
+<div id="modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm hidden">
+    <!-- Close Overlay (Clicking background closes modal) -->
+    <div class="absolute inset-0" onclick="closeModal()"></div>
+    
+    <!-- Modal Card -->
+    <div class="modal-content relative w-full max-w-2xl bg-[#161616] rounded-2xl border border-[#333] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- Close Button (Top Right) -->
+        <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 hover:bg-[var(--brand)] hover:text-black text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- Image Side (Left) -->
+        <div class="w-full md:w-1/2 aspect-square bg-black relative">
+            <img id="modal-img" src="" alt="Vinyl Scan" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Details Side (Right) -->
+        <div class="w-full md:w-1/2 p-8 flex flex-col justify-center text-left">
+            <span id="modal-cat" class="text-xs font-bold tracking-widest text-[#555] uppercase mb-2">Category</span>
+            <h2 id="modal-title" class="text-3xl font-black text-white mb-2 leading-tight">Name</h2>
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-sm text-[#888]">Product Code:</span>
+                <span id="modal-code" class="text-lg font-bold text-[var(--brand)]">CODE</span>
+            </div>
+            
+            <p class="text-[#888] text-sm leading-relaxed mb-6">
+                High-definition scan of our premium vinyl series. Colors may vary slightly depending on your screen calibration.
+            </p>
+
+            <button onclick="closeModal()" class="w-full py-3 border border-[#333] rounded hover:border-[var(--brand)] hover:text-[var(--brand)] transition-colors text-sm font-bold uppercase tracking-wide">
+                Close Preview
+            </button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -606,8 +673,45 @@
     const search = document.getElementById('search');
     const tabs = document.querySelectorAll('.tab');
 
+    // --- MODAL CONFIGURATION ---
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalCode = document.getElementById('modal-code');
+    const modalCat = document.getElementById('modal-cat');
+
     let currentFilter = 'all';
     let searchQuery = '';
+
+    // --- FUNCTIONS ---
+
+    function openModal(item) {
+        // Use existing image logic
+        modalImg.src = `${item.code}${IMG_SUFFIX}`; 
+        // Fallback if image doesn't exist
+        modalImg.onerror = function() { 
+            this.src = `https://placehold.co/800x800/111/333?text=${item.code}`; 
+        };
+
+        modalTitle.textContent = item.name;
+        modalCode.textContent = item.code;
+        modalCat.textContent = item.cat;
+        
+        // Show Modal & Lock Scroll
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    // Close Function
+    window.closeModal = function() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = ''; // Restore scroll
+    }
+
+    // Close on 'Escape' key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
 
     function render() {
         grid.innerHTML = '';
@@ -621,6 +725,9 @@
         filtered.forEach(item => {
             const el = document.createElement('div');
             el.className = 'card';
+            // Add click handler to open modal
+            el.onclick = () => openModal(item);
+            
             const imgPath = `${item.code}${IMG_SUFFIX}`;
             
             el.innerHTML = `
